@@ -1,0 +1,33 @@
+Author: Mikko Kortelainen <kortemik@github>
+
+Example how to export a md5 model from blender. You could vary this in a lot of ways but it's a "KISS" example to show it's working.
+
+1) Build a mesh
+
+2) Attach mesh to bones
+   a) Enter 'pose mode'.
+   b) Select the mesh first then select the bone you want to attach to.
+   c) Hit CTRL+P, choose armature deform and with automatic weights.
+
+3) Do armature deforms for mesh objects on property tab
+   a) Click add modifier, Choose Deform, Choose Armature
+   b) Select bone object, bind to vertex group must be active
+
+4) Do single frame animation for all mesh parts
+   * All parts must be listed on dope sheet and have an action
+   * Action editor needs to have the whole animation under the same name, no different animations for hands etc
+
+5) Attach all mesh parts to vertex group
+   a) Select all of them
+   b) Join them
+   c) Select the whole
+   d) In properties tab click the down pointing triangle, add vertex group and name it
+
+6) Select everything
+   a) Enter 'object mode'
+   b) Hit A-A
+
+7) Choose the action for the action editor as active
+
+8) Click export
+

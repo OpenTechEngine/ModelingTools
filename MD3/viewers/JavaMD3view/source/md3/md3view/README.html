@@ -1,0 +1,323 @@
+<html>
+<head>
+<title>Java MD3 Model Viewer</title>
+</head>
+<body>
+
+<h1>Java MD3 Model Viewer</h1>
+
+<p>The Java MD3 Model Viewer is a windowed Java program that uses OpenGL to
+display a Quake 3 .md3 model file on the screen.
+
+<p>The Java source code (which is provided under the GNU General Public License),
+together with its javadoc documentation, is included! You
+can find it in the sources.zip file that comes with the distribution.
+
+<p>The latest version of this program and tips and tricks for efficient use can
+be found on the <a href="http://fragland.net/md3view">Java MD3 Model Viewer Home Page</a>
+(http://fragland.net/md3view).
+
+<h2>Overview</h2>
+
+<ul>
+  <li><a href="#WHATS_NEW">What's New?</a>
+  <li><a href="#INSTALLATION">Installation</a>
+  <li><a href="#TIPS">Tips</a>
+  <li><a href="#JAVA_NEWBIE_TIPS">Java Newbie Tips</a>
+  <li><a href="#TODO">Todo</a>
+  <li><a href="#KNOWN_BUGS_STRANGE_THINGS">Known Bugs/Strange Things</a>
+  <li><a href="#CREDITS">Credits</a>
+  <li><a href="#CONTACT">Contact</a>
+</ul>
+
+<h2><a name="WHATS_NEW">What's New?</a></h2>
+
+<ul>
+<li>New in version 1.2.3
+  <ul>
+  <li>The different animation types, data source types and render types are now represented using the typesafe enum pattern.
+  <li>Animation definitions in an animation.cfg file that are illegal for a certain model are now ignored.
+  <li>Selecting 'Model | Properties' when a texture is displayed will now show some texture properties.
+  <li>Added 'export texture coordinate maps' functionality. Skinners will love this! The function will export
+      all texture coordinate information of a model to 2D UV-map images.
+  <li>Fixed bug in pak file browser causing i.e. 'MODELS' and 'models' to be displayed as different directories.
+  <li>Double clicking on .shader files in the pak file tree now shows their text content.
+  <li>Improved MD3IO.readName() method.
+  <li>DXF exporter no longer writes multiple file footers in exported file.
+  <li>Fixed stupid bug in animation.cfg loader.
+  <li>Added render info function to help menu. This will display information about the OpenGL system
+      used to render the models.
+  <li>Fixed artefacts-during-interpolated-animation bug. On some models it's not completely gone yet,
+      but this is due to float rounding and can't really be fixed...
+  <li>Fixed bug in MD3 loader code that caused failed loads of models with no texture definitions.
+      Props go to Tom Naughton for pointing this out!
+  <li>Restructured code: md3.md3view package now has sub-packages visitor and glmodel.
+  <li>Fixed some textures don't load bug: non-mipmapped OpenGL textures should have a width and height of
+      64, 128 or 256! Textures that do not comply to this rule are now clipped (i.e. the texture
+      'models/mapobjects/teleporter/energy.jpg' is clipped from 64x126 to 64x64).
+      If the viewer detects that mipmapping is possible (GL4Java 2.1.2.1 or later) it will not clip the
+      textures but wil use mipmapping!
+  <li>New email address: <tt>klr8@fragland.net</tt>.
+  <li>Fixed bug causing player model assembly to be interupted by missing .skin files.
+  <li>Fixed bug causing screenshots to have strange deformations. (Thanks to Sven Goethel for the tips!)
+  <li>Fixed searchForPath method not able to deal with backslash bug.
+  <li>First command line argument can now also be a pak file name or a directory. This way you can tell the program on 
+      startup which .pk3 file to open or from which directory files should initially be loaded.
+  <li>Fixed .obj texture coordinate export and face orientation problems. (Thanks to dAVE for the help!)
+  <li>Added background color selection functionality using the JColorChooser class.
+  <li>Looping frames are now used correctely during animation. The last 'looping number'
+      frames of the animation are repeated, the first few frames are only played once.
+  <li>Integrated an MD3 save function and import 3DS function, both written by Donald Gray. So the viewer now
+      allows you to convert 3D Studio .3ds files into MD3 files! (This functionality is still disabled because
+      it is not robust enough yet.)
+  <li>The 'save screenshot' functionality now makes use of the LittleEndianDataOutputStream class that Donald
+      Gray contributed.
+  </ul>
+<li>New in version 1.2.2
+  <ul>
+  <li>There's a new splash screen and icon, made by David 'dines' Durrenberger.
+  <li>The apply submenu of the file menu moved to the model menu.
+  <li>Added export to the Alias Wavefront .obj file format. This also exports the vertex normals and texture
+      coordinates.
+  <li>The different parts of a player model are now automatically assembled when you open one part. This makes
+      viewing of player models much easier: just open "lower.md3"! You can disable this function in the options.      
+  <li>Added detach part functionality to model menu.
+  <li>Made some animation names more verbose.
+  <li>Fixed bug where textures cannot be viewed before a model has been opened. Also, texture modes no longer affect
+      the texture viewer.
+  <li>Added apply texture to mesh functionality. A menu will allow you to apply a texture (.jpg or .tga) to a
+      particular mesh of a model (i.s.o. to the entire model, as is the case with the old apply texture function).
+  <li>Textures are now exported to the same directory as the .wrl file when exporting a model to VRML97, unless
+      this option is turned off in the options panel. Thus it is no longer necessary to manually extract
+      the textures from the pak and edit the .wrl to update the texture URLs!
+  <li>Line breaks are added as needed in the mesh names list of the model properties.
+  <li>The program is now 'officially' distributed under the GNU General Public License. This was allready
+      the case in the past (because the program builds on GL4Java - which is LGPL - and the Mental Vortex
+      MD3View - which is GPL -). The GPL itself is accessible from the help menu.
+  <li>Fixed bug in VRML97 exporter that caused generation of corrupt .wrl files when a model with
+      missing textures was exported.
+  <li>Donald Gray contributed to the project by writing a Autocad DXF exporter.
+  </ul>
+<li>New in version 1.2.1
+  <ul>
+  <li>Fixed bone frames having all kinds of colors. Also, the position data member of a boneframe is now drawn.
+      The boneframes are green, the model itself white, the boneframe position red and the vertex normals yellow.
+  <li>Garbage characters are now filtered from the tag, mesh, model and texture names.
+  <li>Added animation properties button to the animation control panel.
+  <li>The default 'All Frames' animation, which plays all available animation frames, is now
+      allways present, also when the animation.cfg file is found. (Easy when debugging your
+      animation.cfg file).
+  <li>MD3 loader is more robust: it now correctely deals with non-default offsets
+      for the different data parts of the file.
+  <li>Changed some animation names based on info from Paul Steed.
+  <li>Added show vertex normals function to view menu.
+  <li>Added PLG export function.
+  <li>Added support for sex, headoffset and footsteps in animation.cfg loader. Also fixed TORSO_OFFSET
+      compensation code in CFGIO.
+  <li>The meaning of the unknown bytes in the MD3 format is now known and the md3.md3model
+      package was modified accordingly (Big thanks to HK Developments!).
+  <li>JPG textures are now supported (they're used from the Q3DemoTest on).
+  <li>Added option panel, accessible from the options item in the file menu, which lets you
+      control the display of error messages, auto skin loading and jpg texture loading.
+  <li>Default rendering mode is now FLAT_TEXTURED (i.s.o. SHADED_TEXTURED).
+  <li>Model properties output now contains mesh names.
+  <li>Added close model function to file menu.
+  <li>Reorgenized menus: there's now a model menu, which contains the tags menu. When you use
+      the 'Attach File' submenu of the model menu you can attach a file to a certain tag
+      position of the current model.
+  <li>Animation control panel moved to tab on right side of viewer. Also, it's now in a seperate
+      class: MD3ViewAnimationControl.
+  <li>Lots of small code changes all over the program to provide pak file support (i.e. in the
+      searchForPath method).
+  <li>Added full featured pak file browser: you can view text files, apply skins, view textures,
+      load models, ... directely from a .pk3 file! Right click on a node in the pak file tree
+      for a popup menu with lots of new functions!
+  <li>Changed float[] in Vec3 to 3 seperate floats. This lead to a 25% performance improvement
+      during interpolated animation. However, the cost is less elegant code.
+  <li>Fixed bug in blending code: glDepthMask(GL_FALSE) needed for transparent meshes.
+  <li>Command line support is back. The first command line argument, if present, will be intepreted as
+      the name of an .md3 file that should be opened.
+  <li>Fixed small mistake in light source setup.
+  <li>Cleaned up OpenGL code a bit which led to some performance improvements.
+  <li>Last directory from which a file was opened and last directory to which a file was saved
+      are now maintained independently.
+  <li>Added save screenshot function to the file menu. This will save the viewport to a Targa file.
+  <li>Fixed some NullPointer bugs (in MD3GLModelFactory and MD3View).
+  </ul>
+<li>New in version 1.2
+  <ul>
+  <li>Added crude filename filtering to open-file dialog boxes and default save-filename to
+      save-file dialog boxes.
+  <li>Added import skin function to file menu. This allows you to import a .skin file (they
+      come with player models).
+  <li>Added show bone frame box function to view menu. This allows you to display the bounding
+      boxes of the models for each animation frame.
+  <li>The properties function now also lists the number of tags. Also changed layout of output.
+  <li>Changed MD3 loader. It now also supports the <i>hand</i> models, i.e. shotgun_hand.md3.
+  		These hand models contain no meshes (and thus no vertex and triangle data), only animation
+  		frames to animate the use and changing of the weapon in question. Load one and attach
+  		a weapon to the weapon tag and you'll understand...
+  <li>Added transparency. Transparency is processed on a per mesh bases, so some meshes in
+      a model can be transparent while other meshes in the same model are not. Currently 
+      transparency is determined based on the mesh name stored in the .md3 files (hack :).
+  <li>Restructured the code: the general MD3 model classes are now in a package md3.md3model,
+      the viewer specific ones are in md3.md3view and general utility classes reside in the
+      md3.util package.
+  <li>Completely redid animation system. The animation config files (animation.cfg),
+      that accompany the player models, are now parsed and the information in them
+      is used to enable you to play the different animations defined for the player
+      models. Interpolation between key frames was also added and can be toggled on and off.
+  <li>Added gray scale and 24 bit color map support to the TGA file loader. This was
+      necessary because a new texture in Q3T 1.07 (pole.tga) is an 8 bit gray scale
+      Targa image.
+  <li>Added quick manipulations function to view menu. This will switch the view to
+      wire frame mode while the user manipulates the model (rotate, scale, ...).
+      If you have a slow GL card you'll like this! 
+  </ul>
+<li>New in version 1.1
+  <ul>
+  <li>Fixed textures displaying strange bug.
+  <li>Improved model and texture loading performance using buffers.
+  <li>Added panning of model using shift + drag with first mouse button.
+  <li>Added reset view function to view menu to reset manipulations (scale, rotate and pan) of view.
+  <li>Added properties function to file menu to display some stats about the model (nr. of triangles, vertices, ...).
+  <li>Kicked out command line argument support.
+  </ul>
+</ul>
+
+<h2><a name="INSTALLATION">Installation</a></h2>
+
+<h3>Upgrading a previous version</h3>
+
+<p>Upgrading a (old) working version of the Java MD3 Model viewer is very simple: just replace
+your old md3view.jar file with the new one (make sure you're not running the viewer while doing this)!
+
+<h3>Installing it as an application</h3>
+
+<h4>Easy Win32 installation instructions</h4>
+
+<p>On Win32, follow these simple required-software-installation-steps:
+<ol>
+<li>Install the Java Runtime by executing the installer exe. In the following steps I assume that you
+install this to C:\Program Files\JavaSoft\JRE\1.<i>J</i> (where <i>J</i> is a Java version number, i.e. 3).
+<li>Unzip libGL4Java2.<i>X.Y.Z</i>-Win32-x86.zip to C:\Program Files\JavaSoft\JRE\1.<i>J</i>\bin (<i>X.Y.Z</i> is a GL4Java version number).
+<li>Unzip gl4java2.<i>X.Y.Z</i>-jar.zip to C:\Program Files\JavaSoft\JRE\1.<i>J</i>\lib\ext (You might have to create the ext subdirectory!).
+<li>Download the Java MD3 Model Viewer and unzip the distribution to a directory of your choice.
+</ol>
+
+<h4>General installation instructions (mostly for non Win32 users)</h4>
+
+<p>Any OpenGL capable system (Linux, Solaris, WinNT, SGI, ...) should suffice to run the viewer. Most people
+will use the program as a normal application. If you want to do that, follow these instructions (If you're
+new to Java, you might want to read the <a href="#JAVA_NEWBIE_TIPS">Java Newbie Tips</a> first):
+
+  <ol>
+  <li>Get and install <a href="http://java.sun.com/products/">Java 1.2.x or later</a>.
+  You need either the Java SDK or Runtime.
+  Both are available from Sun at: <a href="http://java.sun.com">http://java.sun.com</a>.
+  <li>Get and install <a href="http://www.jausoft.com/">GL4Java</a>, the Java OpenGL binding.
+  You will need at least version 2.0.1.1 of GL4Java!
+  You can get it at <a href="http://www.jausoft.com/">http://www.jausoft.com</a>.
+  (You need 2 files: for version 2.0.1.2 on a Win32 system these would be gl4java2.0.1.2.zip and libgl4java2.0.1.2-win32-x86.zip.
+  Unzip the first one into the 'ext' directory of your Java Runtime. Extract the libraries in the second
+  file into the 'bin' directory of your Java runtime.)
+  <li>Unzip the Java MD3 Model Viewer distribution zip file into a directory of your choice.
+  <li>When on a Windows system, start the md3view.bat file. On Unix machines, type the content
+  of the mdview.bat file directely into your command line.<br>
+  </ol>
+  
+<h3>Installation Problems</h3>
+
+<ul>
+<li>Error message: <tt>Execption in thread "main" java.lang.NoClassDefFoundError: gl4java/awt/GLCanvas</tt><br>
+    This is because Java can't find the 'gl4java.jar' file. Make sure you have
+    <i>C:\Program Files\JavaSoft\JRE\1.J\lib\ext\gl4java.jar</i>
+    (Note that you might have to create the 'ext' dir yourself!).
+<li>Error message: <tt>bad command of file name</tt><br>
+    Edit the md3view.bat file to include the directory where java.exe resides on your system, eg.
+    'c:\windows\system\java -jar md3view.jar'. You can also try to double click on the md3view.jar file. On some systems this also seems to launch
+    the viewer.
+<li>Error message: <tt>Error occured during initialization of VM: java/lang/ClassNotFoundExpception: sun/io/ByteToCharCp1250</tt> (Or a similar message)<br>
+    This is because you're using the US Java Virtual Machine version, that you downloaded from <a href="http://fragland.net/md3view/download.html">http://fragland.net/md3view/download.html</a>
+    on a non US operating system (i.e. Windows 98, Polish edition). Uninstall the US JVM, then download an internationalized version of the Java Virtual Machine from
+    <a href="http://java.sun.com/j2se/1.3/jre/download-windows.html">http://java.sun.com/j2se/1.3/jre/download-windows.html</a> and install that one.
+</ul>
+  
+<h2><a name="TIPS">Tips</a></h2>
+
+<ul>
+<li>I recommend that you use the hotspot JVM (you can also get this from Sun at
+<a href="http://java.sun.com">http://java.sun.com</a>) because it will greatly improve performance!
+Starting from Java 1.3, the hotspot JVM is included by default.
+<li>An easy way to bring the full 3d glory of your new skin to the web is by exporting your model,
+with the skin applied to it, to VRML97. Now convert all textures that you use to jpg format (if necessary),
+and once that's done, edit the VRML file that was generated (normally has extension .wrl) with a text
+editor and change the references to the original textures to point to your .jpg textures (The references
+are allready correct if your model only contained jpg textures!).
+The last step is to include the
+following in an HTML page (I assume the HTML page is in the same directory as the .jpg files and
+your .wrl file):
+  <xmp>
+  <embed src="mygeneratedfile.wrl" width="99%" height="88%" vrml_dashboard="TRUE"></embed> 
+  </xmp>
+</ul>
+
+<h2><a name="JAVA_NEWBIE_TIPS">Java Newbie Tips</a></h1>
+
+<p>If you're new to Java, here are a few tips that might help you in getting Java programs,
+like the Java MD3 Model Viewer, to work:
+  <ul>
+  <li>Java is case sensitive, like C/C++ (also on systems that are not, like Windows 98)!
+  <li>Java programs can't be executed directely by your machine. You'll need a JVM (Java Virtual
+  Machine), aka Java Runtime, to execute a Java program.
+  <li>The Java CLASSPATH is an environment variable similar to the well known PATH environment
+  variable. PATH is used to tell the OS where to find executables. CLASSPATH is used to tell
+  the Java runtime where to find .class files, that is, Java executables.
+  <li>A Java application is a stand-alone Java program. A Java applet is a Java program that
+  runs inside of your Web browser. The Java MD3 Model viewer is a Java application.
+  </ul>
+
+<h2><a name="TODO">Todo</a></h2>
+
+<ul>
+<li>get applet stuff working properly and easily
+<li>real filename filtering in file dialogs (AWT bug 4031440)
+<li>add shader file support
+<li>support for multiple .pk3 files open at the same time
+<li>Recent models/recent pak files list
+<li>Save settings on exit
+<li>export to and import from XGL (http://www.xglspec.org/)
+<li>...
+</ul>
+
+<h2><a name="KNOWN_BUGS_STRANGE_THINGS">Known Bugs/Strange Things</a></h2>
+
+<ul>
+<li>sensitive mouseDragged(), reacts when double clicking in file dialog
+<li>debug output ("gc=0;"), this is done by the gl4java libs...has something to do with gljFree()...only happens with some OpenGL drivers...
+<li>crash when you do resises of OpenGL canvas (on G400, ATI 3D Rage)...probably a problem in GL4Java...
+<li>textures are not shown when model is opened using command line argument...for some strange reason GL_TEXTURE_2D is not enabled when
+    texture data is uploaded?!?...probably synchronization problem between threads...
+<li>strange transparency artefacts (e.g. head not blended behind flash of weapon with Anarki model)...this is a known bug :-/
+<li>error "unexpected end of ZLIB inputstream" when opening models from a pak file using the JRE 1.2.1...this is problem with 1.2.1, upgrade to JRE 1.2.2 or 1.3
+</ul>
+
+<h2><a name="CREDITS">Credits</a></h2>
+
+<ul>
+<li><a href="http://q3arena.net/mentalvortex">Mental Vortex</a> for creating the original MD3View!
+<li><a href="http://www.3dpalette.com/dimension">David 'dines' Durrenberger</a> for creating the cool art: splash screen and icon
+    (versions up to 1.2.1 used art by <a href="http://cschell.com/">casManG</a>)!
+<li><a href="http://www.planetquake.com/hk">HK Developments</a> for some MD3 model format info and help in debugging!
+<li><a href="http://www.widomaker.com/~dgray/">Donald Gray</a> for contributing code to this project!
+<li>Tom Naughton for programming tips and debugging!
+</ul>
+
+<h2><a name="CONTACT">Contact</a></h2>
+  
+<p>If you have any comments, suggestions or bug reports, let me know: <a href="mailto:klr8@fragland.net">Erwin 'KLR8' Vervaet</a>.
+
+<p>Enjoy!
+
+</body>
+</html>

@@ -1,0 +1,140 @@
+<html>
+<head>
+<title>Java MD3 Model Viewer Source Code Overview</title>
+</head>
+<body>
+<h1>Contributing to the Java MD3 Model Viewer</h1>
+
+<p>
+The way I've done this with contributions from other people is that I
+maintain the source code base. When you make modifications and additions to the
+source, send them to me (the modified/added .java files), and I'll integrate
+them into the source code that is later released to the public. (I know this
+model is not really scalable, if more people would join in, we would probably need
+something better. I don't really have any experience with open-source projects yet,
+so if you have any suggestions, please let me know!)
+</p>
+
+<p>
+As you probably have noticed, the viewer uses the GPL license, so all your
+code would become available together with the viewer!
+</p>
+
+<p>
+Also, I guess it would be good for the project if you 'somewhat' adhere to
+the coding style I (and others who contributed) used.
+</p>
+
+<p>
+For the rest, do anything you like! :-) Try to fix bugs that are still
+there, add features you think are missing, ... whatever you want!
+</p>
+
+<h1>Source code structure overview</h1>
+
+<p>
+Just a bit of explanation about the source:
+
+<ul>
+<li>
+<b>package md3.md3model:</b>
+<p>
+    This package contains the base API for input (later maybe output) of.md3
+files and all related files (i.e. animation.cfg, *.jpg, ...). The data
+classes in the package use the 'composite pattern': an MD3 model is actually
+a hierarchy of MD3Model objects. The MD3Model objects support visitors so
+functionality can easily be added on top of the data hierarchy. The package
+also uses the 'abstract factory' pattern: users of the package should use
+MD3ModelFactory to get instances of the classes in the package. Some
+of the classes in the package also use this factory (i.e. MD3IO). That way,
+the users of the API can subclass the MD3ModelFactory class and have the
+package use their own subclasses instead of the classes provided in the
+package itself (the viewer uses this technique).
+</p>
+<p>
+    As a final remark: this package should only contain data directly
+related to the md3 data format, so i.e. OpenGL specific state data is not
+stored here! (Remark: the ThreeDSIO class shouldn't really be here...:-)
+</p>
+</li>
+
+<li>
+<b>package md3.util:</b>
+<p>
+    Package with general utility classes useful when dealing with MD3 model
+data.
+</p>
+</li>
+
+<li>
+<b>package md3.md3view:</b>
+<p>
+    The classes provided here implement the actual GUI and GUI logic of the
+viewer. The viewer uses a subclass of the md3.md3model.MD3ModelFactory class
+to create objects suited for display (i.e. with OpenGL display state data).
+</p>
+<p>
+    The most important class by far is the MD3View class (the main class of
+the viewer). 2 methods in this class are of particular importance:
+searchForPath() and getInputStreamForPath(). You can use these methods to
+get an input stream for a certain file using all 'data sources' known to the
+viewer at a certain time. This way you can write code that reads files from
+either the .pk3 files or directly from the file system.
+</p>
+</li>
+
+<li>
+<b>package md3.md3view.glmodel:</b>
+<p>
+    The classes in this package subclass classes in md.md3model and
+OpenGL state data to them.
+</p>
+</li>
+
+<li>
+<b>package md3.md3view.visitor:</b>
+<p>
+    This package contains visitors for the MD3 model data hierarchy
+maintained by the viewer. Most of the functionality of the viewer is provided
+using a visitor (i.e. exporting of data, drawing of models, ...)
+</p>
+</li>
+
+<li>
+<b>package cio:</b>
+<p>
+    This package contains input & output streams to do endian order switches
+necessary when reading & writing C data from Intel CPUs.
+</p>
+</li>
+
+<li>
+<b>package widgets.awt:</b>
+<p>
+    Additional widgets (i.e. a Tree) used by the viewer not provided in the
+standard AWT.
+</p>
+</li>
+
+<li>
+<b>package widgets.awt.event:</b>
+<p>
+    Event classes used by new widgets.
+</p>
+</li>
+</ul>
+   
+</p>
+
+<h1>Contact information</h1>
+
+<p>
+Any questions should be send to: <a href="mailto:klr8@fragland.net">klr8@fragland.net</a><br>
+The Java MD3 Model Viewer home pages can be found at: <a href="http://fragland.net/md3view">http://fragland.net/md3view</a>
+</p>
+
+<p>
+Erwin 'KLR8' Vervaet
+</p>
+</body>
+</html>
