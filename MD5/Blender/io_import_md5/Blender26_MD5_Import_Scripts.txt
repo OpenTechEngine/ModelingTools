@@ -1,0 +1,16 @@
+The code was based on Bob Holcomb and Thomas "der_ton" Hutter's work for
+their previous Blender import scripts.
+
+To use these scripts, copy both io_import_md5.py and io_import_md5anim.py
+into Blender's scripts/addons folder. When running Blender, go to your
+User Preferences and click on the Addons tab/sub menu thing. You should
+find two new entries titled 
+
+"Import-Export: Import id Tech 4 Animation Format (.md5anim)" and
+"Import-Export: Import id Tech 4 MESH Format (.md5mesh)".
+
+Just click on the check boxes next to them to enable them. Clicking on the
+"Save As Default" button will keep the scripts enable the next time you run
+Blender.
+
+To use either script, just go into the File -> Import menu.
