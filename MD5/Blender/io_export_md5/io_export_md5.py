@@ -927,31 +927,40 @@ def unregister():
   
 def print_executed_string():
   print("Executed string: "+" ".join(sys.argv))
+
 if __name__ == "__main__":
+      
+  import getopt
+  output_dir = os.getcwd()
+  global scale
+  scale = 1.00
+  accepted_arguments = ["output-dir=", "scale=", "help"]
+
+  def usage():
+    print('Usage: blender file.blend --background --python io_export_md5.py -- --arg1 val1 --arg2 val2')
+    print("Available arguments")
+    for argument in accepted_arguments:
+      print("\t--"+argument)
+
   dashes_at = 0
   i = 0
   for arg in sys.argv:
     if arg == "--":
       dashes_at = i+1
     i = i+1
-  if dashes_at == 0:
+  if len(sys.argv) == 1:
     register()
     exit()
-  
-  import getopt
-  output_dir = os.getcwd()
-  global scale
-  scale = 1.00
-  accepted_arguments = ["output-dir=", "scale="]
+  else:
+    if dashes_at == 0:
+      usage()
+
   try:
     opts, args  = getopt.getopt(sys.argv[dashes_at:], "", accepted_arguments)
   except getopt.GetoptError as err:
     print_executed_string()
     print(str(err))
-    print("Available arguments")
-    for argument in accepted_arguments:
-      # FIXME: usage()
-      print("\t"+argument)
+    usage()
     sys.exit(2)
     
   for opt, arg in opts:
@@ -968,6 +977,9 @@ if __name__ == "__main__":
         print_executed_string()
         print("--scale expected float, received: "+arg)
         sys.exit(2)
+    if opt == '--help':
+      usage()
+      sys.exit(0)
         
   objList = [object for object in bpy.context.scene.objects if object.type == 'MESH']
   for ob in objList:
