@@ -41,7 +41,6 @@ bl_info = { # changed from bl_addon_info in 2.57 -mikshaw
     "category": "Import-Export"}
 
 import bpy,struct,math,os,time,sys,mathutils
-from bpy_extras.io_utils import ExportHelper
 
 #MATH UTILTY
 
@@ -387,7 +386,6 @@ class Bone:
 
 
   def to_md5mesh(self):
-    global scale
     buf= "\t\"%s\"\t" % (self.name)
     parentindex = -1
     if self.parent:
@@ -924,67 +922,6 @@ def register():
 def unregister():
   bpy.utils.unregister_module(__name__)  #mikshaw
   bpy.types.INFO_MT_file_export.remove(menu_func)
-  
-def print_executed_string():
-  print("Executed string: "+" ".join(sys.argv))
 
 if __name__ == "__main__":
-      
-  import getopt
-  output_dir = os.getcwd()
-  global scale
-  scale = 1.00
-  accepted_arguments = ["output-dir=", "scale=", "help"]
-
-  def usage():
-    print('Usage: blender file.blend --background --python io_export_md5.py -- --arg1 val1 --arg2 val2')
-    print("Available arguments")
-    for argument in accepted_arguments:
-      print("\t--"+argument)
-
-  dashes_at = 0
-  i = 0
-  for arg in sys.argv:
-    if arg == "--":
-      dashes_at = i+1
-    i = i+1
-  if len(sys.argv) == 1:
-    register()
-    exit()
-  else:
-    if dashes_at == 0:
-      usage()
-
-  try:
-    opts, args  = getopt.getopt(sys.argv[dashes_at:], "", accepted_arguments)
-  except getopt.GetoptError as err:
-    print_executed_string()
-    print(str(err))
-    usage()
-    sys.exit(2)
-    
-  for opt, arg in opts:
-    if opt == '--output-dir':
-      output_dir = arg
-      if os.access(output_dir, os.W_OK) == False:
-        print_executed_string()
-        print('Cannot write to folder: '+output_dir)
-        sys.exit(2)
-    if opt == '--scale':
-      try:
-        scale = float(arg)
-      except ValueError:
-        print_executed_string()
-        print("--scale expected float, received: "+arg)
-        sys.exit(2)
-    if opt == '--help':
-      usage()
-      sys.exit(0)
-        
-  objList = [object for object in bpy.context.scene.objects if object.type == 'MESH']
-  for ob in objList:
-    print(ob.name)
-    ob.select = True
-    if ob.type == "MESH":
-      save_md5(md5Settings(savepath=output_dir+"/"+ob.name, exportMode="mesh & anim"))
-    ob.select = False
+  register()
