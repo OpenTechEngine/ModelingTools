@@ -677,8 +677,9 @@ class BlenderExtractor(object):
                             loc_vector = vertex.co
 
                             try:
+                                False
                                 # vertex has uv
-                                loc_vector = self._blender_mesh.data.uv_layers.active.data[loop_index].uv
+                                # loc_vector = self._blender_mesh.data.uv_layers.active.data[loop_index].uv
                                 # print("UV: %r" % loc_vector) # development printout
                             except AttributeError:
                                 # vertex does not have uv
@@ -729,7 +730,8 @@ class BlenderExtractor(object):
                         return False
                     # check same material_index as rest of the mesh
                     elif polygon.material_index != material_index:
-                        Typewriter.warn("Invalid material on polygon: %i" % polygon.index)
+                        Typewriter.warn("Inconsistent material on polygon: %i matrial_index: %i mesh_material: %i"
+                                        % (polygon.index, polygon.material_index, material_index))
                         # we skip here, however we should not, but for the time being..
                         return True
                     else:
@@ -742,7 +744,7 @@ class BlenderExtractor(object):
                     self._vertextractor = self._VertExtractor(self._new_mesh, self._blender_mesh, self._bone_dict, scale)
 
                     for polygon in self._blender_mesh.data.polygons:
-                        if self.polygon_validate(polygon, self._blender_mesh.data.materials[0].name):
+                        if self.polygon_validate(polygon, self._blender_mesh.active_material_index):
                             # polygon vertice extractor
                             face_vertices = self._vertextractor.extract(polygon)
 
