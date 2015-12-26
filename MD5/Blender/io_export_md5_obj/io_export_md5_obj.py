@@ -676,23 +676,34 @@ class BlenderExtractor(object):
                             vertex = self._blender_mesh.data.vertices[vertex_index]
                             loc_vector = vertex.co
 
+                            w_matrix = self._blender_mesh.matrix_world
+                            coord = loc_vector * w_matrix  # verify this
+
                             try:
-                                False
-                                # vertex has uv
-                                # loc_vector = self._blender_mesh.data.uv_layers.active.data[loop_index].uv
+                                # if uv-cordinates found for vertex we use them
+                                # instead of position cordinates. uniqueness check
+                                # will make sure that when blender uses multiple
+                                # uv cordinates for same vertices depending on which
+                                # polygon we accessing we will have them duplicated
+                                # as md5mesh format does not have that kind of
+                                # topology which would allow this kind of size optimization
+                                uv = self._blender_mesh.data.uv_layers.active.data[loop_index].uv
+                                coord[0] = uv[0]
+                                # y-axis is flipped for md5meshes
+                                coord[1] = 1 - uv[1]
                                 # print("UV: %r" % loc_vector) # development printout
                             except AttributeError:
-                                # vertex does not have uv
-                                Typewriter.warn("vertex without uv: %i" % vertex_index)
+                                # polygon does not have uv adta
+                                Typewriter.warn("no uv map for polygon: %i" % loop_index)
+                            except KeyError:
+                                # vertex does not have uv cordinates
+                                Typewriter.warn("no uv cordinates for vertex: %i" % vertex_index)
 
                             # print(loc_vector)
                             temp_vert = self._TempVert(loc_vector[0], loc_vector[1], loc_vector[2])
 
                             if self._temp_vert_uniq(vertex_index, temp_vert):
                                 # if unique, create new md5 vertex
-                                w_matrix = self._blender_mesh.matrix_world
-                                coord = loc_vector * w_matrix  # verify this
-
                                 weightextractor = self._WeightExtractor(self._new_mesh, self._blender_mesh, vertex, vertex_index, self._bone_dict, self._scale)
                                 weightstart = weightextractor.firstweight
                                 weightcount = weightextractor.weightcount
