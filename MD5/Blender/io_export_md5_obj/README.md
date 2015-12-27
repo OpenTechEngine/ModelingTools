@@ -42,8 +42,20 @@ Exports everything exportable in the blend file, destination directory is select
 
 **Instructions**
 
-
 With the script enabled, you can use it via the File>Export menu as MD5 Mesh and Anim (.md5mesh .md5anim). Selecting that menu entry will open Blender's file browser where you can select destination directory and adjust the script's options. The script provides a few options for controlling the export, currently they are:
 
 - Scale: Exported objects are scaled from blender by multiplying with this value. Default=1.00
 
+**Advanced usage**
+
+This exporter can be run directly from commandline:
+
+	blender your_file.blend -b -P io_export_md5_obj.py -- --output-dir=/path/to/destination_directory
+
+Usage: blender file.blend --background --python io_export_md5.py -- --arg1 val1 --arg2 val2
+
+Available arguments
+
+* --output-dir=
+* --scale=
+* --help
