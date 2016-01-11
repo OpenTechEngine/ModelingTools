@@ -64,29 +64,6 @@ class Typewriter(object):
     error = print_error
 
 
-class MD5Math(object):
-
-    def getminmax(listofpoints):
-        if len(listofpoints[0]) == 0:
-            return ([0, 0, 0], [0, 0, 0])
-        min = [listofpoints[0][0], listofpoints[1][0], listofpoints[2][0]]
-        max = [listofpoints[0][0], listofpoints[1][0], listofpoints[2][0]]
-        if len(listofpoints[0]) > 1:
-            for i in range(1, len(listofpoints[0])):
-                if listofpoints[i][0] > max[0]:
-                    max[0] = listofpoints[i][0]
-                if listofpoints[i][1] > max[1]:
-                    max[1] = listofpoints[i][1]
-                if listofpoints[i][2] > max[2]:
-                    max[2] = listofpoints[i][2]
-                if listofpoints[i][0] < min[0]:
-                    min[0] = listofpoints[i][0]
-                if listofpoints[i][1] < min[1]:
-                    min[1] = listofpoints[i][1]
-                if listofpoints[i][2] < min[2]:
-                    min[2] = listofpoints[i][2]
-        return (min, max)
-
 ################################################################################
 #
 # MD5File object, should be it's own module but that and blender don't cope
