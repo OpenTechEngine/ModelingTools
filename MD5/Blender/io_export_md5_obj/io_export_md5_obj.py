@@ -880,29 +880,41 @@ class BlenderExtractor(object):
         class _BoundExtractor(object):
             # TODO performance seems suboptimal
 
-            def __init__(self, format_object, meshes, animation, scale):
+            def _extract_min_max(self, meshes):
+
+                for mesh in meshes:
+                    local_coords = mesh.bound_box
+                    w_matrix = mesh.matrix_world
+
+                    x = []
+                    y = []
+                    z = []
+
+                    for point in local_coords:
+                        loc_vec = w_matrix * mathutils.Vector(point)
+                        x.append(loc_vec[0])
+                        y.append(loc_vec[1])
+                        z.append(loc_vec[2])
+
+                min_v = mathutils.Vector([min(x), min(y), min(z)])
+                max_v = mathutils.Vector([max(x), max(y), max(z)])
+
+                return (min_v, max_v)
+
+            def _extract_bounds(self, format_object, meshes, animation, scale):
                 scene = bpy.context.scene
                 first_frame = int(animation.frame_range[0])
                 last_frame = int(animation.frame_range[1])
 
                 for i in range(first_frame, last_frame + 1):
-                    corners = []
                     scene.frame_set(i)
 
-                    for mesh in meshes:
-                        (lx, ly, lz) = mesh.location
-                        bbox = mesh.bound_box
-                        matrix = mathutils.Matrix([[1.0,  0.0, 0.0, 0.0],
-                                                   [0.0,  1.0, 0.0, 0.0],
-                                                   [0.0,  1.0, 1.0, 0.0],
-                                                   [0.0,  0.0, 0.0, 1.0],
-                                                   ])
-                        for v in bbox:
-                            vecp = mathutils.Vector((v[0], v[1], v[2]))
-                            corners.append(vecp * matrix)
-
-                    (min, max) = MD5Math.getminmax(corners)
+                    # (min, max) = self._old_extract_bound(meshes)
+                    (min, max) = self._extract_min_max(meshes)
                     format_object.Bounds.Bound(min[0] * scale, min[1] * scale, min[2] * scale, max[0] * scale, max[1] * scale, max[2] * scale)
+
+            def __init__(self, format_object, meshes, animation, scale):
+                self._extract_bounds(format_object, meshes, animation, scale)
 
         class _FrameExtractor(object):
 
