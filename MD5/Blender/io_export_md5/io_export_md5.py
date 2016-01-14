@@ -1,5 +1,5 @@
 '''
-io_export_md5_obj Blender plugin to extract MD5 objects from .blend files
+io_export_md5 Blender plugin to extract MD5 objects from .blend files
 Copyright (C) 2015 Mikko Kortelainen <mikko.kortelainen@fail-safe.net>
 
 This program is free software: you can redistribute it and/or modify it under
@@ -42,8 +42,8 @@ bl_info = {
     " (.md5mesh/.md5anim)",
     "description": "Exports MD5 Format (.md5mesh, .md5anim)",
     "warning": "",
-    "wiki_url": "https://github.com/OpenTechEngine/modWiki",
-    "tracker_url": "https://github.com/OpenTechEngine/ModelingTools",
+    "wiki_url": "https://modwiki.xnet.fi/io_export_md5",
+    "tracker_url": "https://github.com/OpenTechEngine/ModelingTools/issues",
     "category": "Import-Export"
 }
 
@@ -994,7 +994,7 @@ class BlenderExtractor(object):
 class ExportMD5(bpy.types.Operator):
 
     '''Export to MD5 Mesh and Anim (.md5mesh .md5anim)'''
-    bl_idname = "export.md5_obj"
+    bl_idname = "export.md5"
     bl_label = 'MD5Export'
 
     logenum = [("console", "Console", "log to console"),
